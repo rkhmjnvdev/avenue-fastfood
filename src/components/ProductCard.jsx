@@ -27,7 +27,7 @@ const ProductCard = ({ item, onAddToCart }) => {
   }
 
   return (
-    <div className={`product-card ${isAdding ? "adding" : ""}`}>
+    <div className={`product-card fadeInDown ${isAdding ? "adding" : ""}`}>
       <div className="product-image">
         <img src={item.image || "/placeholder.svg"} alt={item.name} />
       </div>

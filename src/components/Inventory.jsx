@@ -59,7 +59,7 @@ const Inventory = ({ items, onAddIngredient, onRemoveIngredient }) => {
   }
 
   return (
-    <section className="inventory-section">
+    <section className="inventory-section fadeInDown">
       <div className="inventory-header">
         <h2 className="inventory-title">Склад ингредиентов</h2>
         <button className="add-ingredient-btn" onClick={() => setShowAddModal(true)}>

@@ -8,7 +8,7 @@ import Inventory from "./components/Inventory"
 import "./App.css"
 
 const menuData = {
-  Меню: [
+  Menu: [
     {
       id: 1,
       name: "French Cheese",
