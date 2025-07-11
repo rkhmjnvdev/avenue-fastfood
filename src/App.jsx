@@ -5,6 +5,7 @@ import Header from "./components/Header"
 import MenuSection from "./components/MenuSection"
 import Cart from "./components/Cart"
 import Inventory from "./components/Inventory"
+import Orders from "./components/Orders"
 import "./App.css"
 
 const menuData = {
@@ -80,6 +81,8 @@ const menuData = {
 function App() {
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
+  const [showOrders, setShowOrders] = useState(false)
+  const [orders, setOrders] = useState([])
   const [ingredientsInventory, setIngredientsInventory] = useState([
     { id: "ing1", name: "Сосиски говяжьи", category: "Мясные изделия", unit: "шт", stock: 25, price: 8000 },
     { id: "ing2", name: "Сосиски куриные", category: "Мясные изделия", unit: "шт", stock: 18, price: 7000 },
@@ -166,9 +169,47 @@ function App() {
     return cart.reduce((total, item) => total + item.quantity, 0)
   }
 
+  // Функция создания заказа
+  const createOrder = (items, total, customerInfo) => {
+    console.log("Создание заказа:", { items, total, customerInfo }) // Для отладки
+
+    const newOrder = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      items: [...items],
+      total: total,
+      customerInfo: customerInfo,
+      status: "Новый",
+    }
+
+    console.log("Новый заказ:", newOrder) // Для отладки
+
+    setOrders((prevOrders) => {
+      const updatedOrders = [newOrder, ...prevOrders]
+      console.log("Обновленный список заказов:", updatedOrders) // Для отладки
+      return updatedOrders
+    })
+
+    setCart([]) // Очистить корзину после оформления заказа
+
+    // Показать уведомление об успешном заказе
+    alert(`Заказ #${newOrder.id} успешно оформлен! Мы свяжемся с вами в ближайшее время.`)
+  }
+
+  // Функция для открытия/закрытия заказов
+  const handleOrdersClick = () => {
+    console.log("Клик по заказам, текущие заказы:", orders) // Для отладки
+    setShowOrders(!showOrders)
+  }
+
   return (
     <div className="App">
-      <Header cartCount={getTotalItems()} onCartClick={() => setShowCart(!showCart)} />
+      <Header
+        cartCount={getTotalItems()}
+        onCartClick={() => setShowCart(!showCart)}
+        onOrdersClick={handleOrdersClick}
+        ordersCount={orders.length}
+      />
 
       {showCart && (
         <Cart
@@ -177,8 +218,11 @@ function App() {
           onUpdateQuantity={updateCartQuantity}
           onRemoveItem={removeFromCart}
           onClose={() => setShowCart(false)}
+          onCreateOrder={createOrder}
         />
       )}
+
+      {showOrders && <Orders orders={orders} onClose={() => setShowOrders(false)} />}
 
       <main className="main-content">
         {Object.entries(menuData).map(([category, items]) => (
