@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-const Inventory = ({ items, onAddIngredient, onRemoveIngredient }) => {
-  const [showAddModal, setShowAddModal] = useState(false)
+const Inventory = ({ items = [], onAddIngredient, onRemoveIngredient }) => {
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newIngredient, setNewIngredient] = useState({
     name: "",
     category: "",
     unit: "",
     stock: 0,
     price: 0,
-  })
+  });
 
   const categories = [
     "Мясные изделия",
@@ -21,28 +21,28 @@ const Inventory = ({ items, onAddIngredient, onRemoveIngredient }) => {
     "Масла",
     "Специи",
     "Упаковка",
-  ]
+  ];
 
-  const units = ["кг", "л", "шт", "м", "г"]
+  const units = ["кг", "л", "шт", "м", "г"];
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (newIngredient.name && newIngredient.category && newIngredient.unit) {
-      onAddIngredient(newIngredient)
-      setNewIngredient({ name: "", category: "", unit: "", stock: 0, price: 0 })
-      setShowAddModal(false)
+      onAddIngredient(newIngredient);
+      setNewIngredient({ name: "", category: "", unit: "", stock: 0, price: 0 });
+      setShowAddModal(false);
     }
-  }
+  };
 
   const handleDelete = (id) => {
     if (window.confirm("Вы уверены, что хотите удалить этот товар?")) {
-      onRemoveIngredient(id)
+      onRemoveIngredient(id);
     }
-  }
+  };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("ru-RU").format(price) + " сум"
-  }
+    return new Intl.NumberFormat("ru-RU").format(price) + " сум";
+  };
 
   const getCategoryBadgeColor = (category) => {
     const colors = {
@@ -54,9 +54,9 @@ const Inventory = ({ items, onAddIngredient, onRemoveIngredient }) => {
       Масла: "#f1c40f",
       Специи: "#9b59b6",
       Упаковка: "#95a5a6",
-    }
-    return colors[category] || "#6c757d"
-  }
+    };
+    return colors[category] || "#6c757d";
+  };
 
   return (
     <section className="inventory-section fadeInDown">
@@ -179,40 +179,59 @@ const Inventory = ({ items, onAddIngredient, onRemoveIngredient }) => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className={item.stock <= 5 ? "low-stock-row" : ""}>
-                <td className="item-name">{item.name}</td>
-                <td>
-                  <span className="category-badge" style={{ backgroundColor: getCategoryBadgeColor(item.category) }}>
-                    {item.category}
-                  </span>
-                </td>
-                <td className="item-unit">{item.unit}</td>
-                <td className="item-price">{formatPrice(item.price)}</td>
-                <td className="item-stock">
-                  {item.stock} {item.unit}
-                </td>
-                <td>
-                  <span
-                    className={`status-badge ${
-                      item.stock === 0 ? "out-of-stock" : item.stock <= 5 ? "low-stock" : "in-stock"
-                    }`}
-                  >
-                    {item.stock === 0 ? "Нет в наличии" : item.stock <= 5 ? "Заканчивается" : "В наличии"}
-                  </span>
-                </td>
-                <td>
-                  <button className="delete-btn" onClick={() => handleDelete(item.id)} title="Удалить товар">
-                    🗑️
-                  </button>
+            {Array.isArray(items) && items.length > 0 ? (
+              items.map((item) => (
+                <tr key={item.id} className={item.stock <= 5 ? "low-stock-row" : ""}>
+                  <td className="item-name">{item.name}</td>
+                  <td>
+                    <span
+                      className="category-badge"
+                      style={{ backgroundColor: getCategoryBadgeColor(item.category) }}
+                    >
+                      {item.category}
+                    </span>
+                  </td>
+                  <td className="item-unit">{item.unit}</td>
+                  <td className="item-price">{formatPrice(item.price)}</td>
+                  <td className="item-stock">
+                    {item.stock} {item.unit}
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${
+                        item.stock === 0 ? "out-of-stock" : item.stock <= 5 ? "low-stock" : "in-stock"
+                      }`}
+                    >
+                      {item.stock === 0
+                        ? "Нет в наличии"
+                        : item.stock <= 5
+                        ? "Заканчивается"
+                        : "В наличии"}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(item.id)}
+                      title="Удалить товар"
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
+                  Инвентарь пуст или не загружен.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Inventory
+export default Inventory;
